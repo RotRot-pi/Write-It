@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../settings/route/routes.dart';
 
-class FirebaseCrud {
+class FirebaseCRUD {
   final _firestore = FirebaseFirestore.instance;
 
   final User? currentUser = FirebaseAuth.instance.currentUser;

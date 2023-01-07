@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +25,6 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
 
   @override
   void initState() {
-    log('init');
     formState = GlobalKey<FormState>();
     usernameController = TextEditingController();
     emailController = TextEditingController();
@@ -37,31 +34,24 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
 
   @override
   void didUpdateWidget(covariant AuthenticationScreen oldWidget) {
-    log('update');
-    formState = GlobalKey<FormState>();
-    usernameController = TextEditingController();
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void didChangeDependencies() {
-    log('change');
-
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    log('dispose');
-
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    log('build');
     final auth = ref.watch(firebaseAuthProvider);
 
     final isLogin = ref.watch(isLoginState);
@@ -93,139 +83,228 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                 child: Column(
                   children: [
                     if (!isLogin)
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: (value) =>
-                            usernameController.text = value.trim(),
-                        validator: (value) {
-                          debugPrint("value:$value");
-                          if (value!.isEmpty && value.length < 6) {
-                            return 'the username must contain at least 4 character';
-                          }
-                          return null;
-                        },
-                        cursorColor: kYellow,
-                        cursorWidth: 2,
-                        style: const TextStyle(
-                          color: kWhite,
-                        ),
-                        decoration: InputDecoration(
-                          hintStyle: const TextStyle(color: kLightWhite),
-                          hintText: 'Username',
-                          focusedBorder: authTextFieldInputBorderStyle,
-                          enabledBorder: authTextFieldInputBorderStyle,
-                          focusedErrorBorder: authTextFieldInputBorderStyle,
-                          errorBorder: authTextFieldInputBorderStyle,
-                        ),
-                      ),
+                      UserNameFormField(usernameController: usernameController),
                     if (!isLogin) addVerticalSizedBox(20),
-                    TextFormField(
-                      onChanged: (value) => emailController.text = value.trim(),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) {
-                        if (!value!.isContaing('@', '.')) {
-                          return 'The email must be a valid email address';
-                        }
-                        return null;
-                      },
-                      cursorColor: kYellow,
-                      cursorWidth: 2,
-                      style: const TextStyle(
-                        color: kWhite,
-                      ),
-                      decoration: InputDecoration(
-                        hintStyle: const TextStyle(color: kLightWhite),
-                        hintText: 'Email',
-                        focusedBorder: authTextFieldInputBorderStyle,
-                        enabledBorder: authTextFieldInputBorderStyle,
-                        focusedErrorBorder: authTextFieldInputBorderStyle,
-                        errorBorder: authTextFieldInputBorderStyle,
-                      ),
-                    ),
+                    EmailFormField(emailController: emailController),
                     addVerticalSizedBox(20),
-                    TextFormField(
-                      onChanged: (value) =>
-                          passwordController.text = value.trim(),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (value) {
-                        if (value!.length < 8) {
-                          return 'The password must be at least 8 characters';
-                        }
-                        if (value.length > 20) {
-                          return 'The password must be less than 20 characters';
-                        }
-                        return null;
-                      },
-                      cursorColor: kYellow,
-                      cursorWidth: 2,
-                      obscureText: true,
-                      style: const TextStyle(
-                        color: kWhite,
-                      ),
-                      decoration: InputDecoration(
-                        hintStyle: const TextStyle(color: kLightWhite),
-                        hintText: 'Password',
-                        focusedBorder: authTextFieldInputBorderStyle,
-                        enabledBorder: authTextFieldInputBorderStyle,
-                        focusedErrorBorder: authTextFieldInputBorderStyle,
-                        errorBorder: authTextFieldInputBorderStyle,
-                      ),
-                    ),
+                    PasswordFormField(passwordController: passwordController),
                   ],
                 ),
               ),
               addVerticalSizedBox(40),
-              SignUpLogInButton(
-                  text: isLogin ? 'Log In' : 'Sign Up',
-                  authF: isLogin
-                      ? () async {
-                          await auth.loginMethode(
-                            context,
-                            formState,
-                            emailController.text,
-                            passwordController.text,
-                          );
-                          () =>
-                              ref.read(userState.notifier).state.asData == null
-                                  ? showLoading(context)
-                                  : null;
-                        }
-                      : () async {
-                          await auth.signUpMethode(
-                            context,
-                            formState,
-                            usernameController.text,
-                            emailController.text,
-                            passwordController.text,
-                          );
-                          () =>
-                              ref.read(userState.notifier).state.asData == null
-                                  ? showLoading(context)
-                                  : null;
-                        }),
+              AuthButton(
+                  isLogin: isLogin,
+                  auth: auth,
+                  formState: formState,
+                  emailController: emailController,
+                  passwordController: passwordController,
+                  ref: ref,
+                  usernameController: usernameController),
               addVerticalSizedBox(20),
-              RichText(
-                text: TextSpan(
-                    text: isLogin
-                        ? 'If you don\'t have an account yet? '
-                        : 'If you have an account ',
-                    children: [
-                      TextSpan(
-                        text: isLogin ? 'Sign up' : 'Log in.',
-                        style: const TextStyle(color: kYellow),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            log('${!ref.read(isLoginState.notifier).state}');
-                            ref.read(isLoginState.notifier).state == false
-                                ? ref.read(isLoginState.notifier).state = true
-                                : ref.read(isLoginState.notifier).state = false;
-                          },
-                      ),
-                    ]),
+              SwitchAuthInterface(
+                isLogin: isLogin,
+                ref: ref,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SwitchAuthInterface extends StatelessWidget {
+  const SwitchAuthInterface({
+    Key? key,
+    required this.isLogin,
+    required this.ref,
+  }) : super(key: key);
+
+  final bool isLogin;
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+          text: isLogin
+              ? 'If you don\'t have an account yet? '
+              : 'If you have an account ',
+          children: [
+            TextSpan(
+              text: isLogin ? 'Sign up' : 'Log in.',
+              style: const TextStyle(color: kYellow),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  ref.read(isLoginState.notifier).state == false
+                      ? ref.read(isLoginState.notifier).state = true
+                      : ref.read(isLoginState.notifier).state = false;
+                },
+            ),
+          ]),
+    );
+  }
+}
+
+class AuthButton extends StatelessWidget {
+  const AuthButton({
+    Key? key,
+    required this.isLogin,
+    required this.auth,
+    required this.formState,
+    required this.emailController,
+    required this.passwordController,
+    required this.ref,
+    required this.usernameController,
+  }) : super(key: key);
+
+  final bool isLogin;
+  final Authentication auth;
+  final GlobalKey<FormState> formState;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final WidgetRef ref;
+  final TextEditingController usernameController;
+
+  @override
+  Widget build(BuildContext context) {
+    return SignUpLogInButton(
+        text: isLogin ? 'Log In' : 'Sign Up',
+        authF: isLogin
+            ? () async {
+                await auth.loginMethode(
+                  context,
+                  formState,
+                  emailController.text,
+                  passwordController.text,
+                );
+                () => ref.read(userState.notifier).state.asData == null
+                    ? showLoading(context)
+                    : null;
+              }
+            : () async {
+                await auth.signUpMethode(
+                  context,
+                  formState,
+                  usernameController.text,
+                  emailController.text,
+                  passwordController.text,
+                );
+                () => ref.read(userState.notifier).state.asData == null
+                    ? showLoading(context)
+                    : null;
+              });
+  }
+}
+
+class PasswordFormField extends StatelessWidget {
+  const PasswordFormField({
+    Key? key,
+    required this.passwordController,
+  }) : super(key: key);
+
+  final TextEditingController passwordController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      onChanged: (value) => passwordController.text = value.trim(),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value!.length < 8) {
+          return 'The password must be at least 8 characters';
+        }
+        if (value.length > 20) {
+          return 'The password must be less than 20 characters';
+        }
+        return null;
+      },
+      cursorColor: kYellow,
+      cursorWidth: 2,
+      obscureText: true,
+      style: const TextStyle(
+        color: kWhite,
+      ),
+      decoration: InputDecoration(
+        hintStyle: const TextStyle(color: kLightWhite),
+        hintText: 'Password',
+        focusedBorder: authTextFieldInputBorderStyle,
+        enabledBorder: authTextFieldInputBorderStyle,
+        focusedErrorBorder: authTextFieldInputBorderStyle,
+        errorBorder: authTextFieldInputBorderStyle,
+      ),
+    );
+  }
+}
+
+class EmailFormField extends StatelessWidget {
+  const EmailFormField({
+    Key? key,
+    required this.emailController,
+  }) : super(key: key);
+
+  final TextEditingController emailController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      onChanged: (value) => emailController.text = value.trim(),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (!value!.isContaing('@', '.')) {
+          return 'The email must be a valid email address';
+        }
+        return null;
+      },
+      cursorColor: kYellow,
+      cursorWidth: 2,
+      style: const TextStyle(
+        color: kWhite,
+      ),
+      decoration: InputDecoration(
+        hintStyle: const TextStyle(color: kLightWhite),
+        hintText: 'Email',
+        focusedBorder: authTextFieldInputBorderStyle,
+        enabledBorder: authTextFieldInputBorderStyle,
+        focusedErrorBorder: authTextFieldInputBorderStyle,
+        errorBorder: authTextFieldInputBorderStyle,
+      ),
+    );
+  }
+}
+
+class UserNameFormField extends StatelessWidget {
+  const UserNameFormField({
+    Key? key,
+    required this.usernameController,
+  }) : super(key: key);
+
+  final TextEditingController usernameController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      onChanged: (value) => usernameController.text = value.trim(),
+      validator: (value) {
+        debugPrint("value:$value");
+        if (value!.isEmpty && value.length < 6) {
+          return 'the username must contain at least 4 character';
+        }
+        return null;
+      },
+      cursorColor: kYellow,
+      cursorWidth: 2,
+      style: const TextStyle(
+        color: kWhite,
+      ),
+      decoration: InputDecoration(
+        hintStyle: const TextStyle(color: kLightWhite),
+        hintText: 'Username',
+        focusedBorder: authTextFieldInputBorderStyle,
+        enabledBorder: authTextFieldInputBorderStyle,
+        focusedErrorBorder: authTextFieldInputBorderStyle,
+        errorBorder: authTextFieldInputBorderStyle,
       ),
     );
   }

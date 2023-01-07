@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:write_it/services/settings/route/routes.dart';
@@ -7,7 +9,7 @@ import '../../../screens/screens.dart';
 class GoRoutes {
   static routerFunction(
     var navigatorKey,
-    var authState,
+    AsyncValue<User?> authState,
   ) {
     final GoRouter router = GoRouter(
         errorBuilder: (context, state) => ErrorScreen(error: state.error),

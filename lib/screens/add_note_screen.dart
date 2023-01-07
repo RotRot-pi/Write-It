@@ -48,52 +48,80 @@ class AddNoteScreen extends ConsumerWidget {
           child: ListView(
             shrinkWrap: true,
             children: [
-              TextField(
-                key: const Key('title'),
-                controller: title,
-                maxLines: 1,
-                maxLength: 35,
-                style: const TextStyle(
-                  color: kWhite,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Title',
-                  hintStyle: TextStyle(
-                    color: kWhite.withOpacity(0.4),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                  counterStyle: TextStyle(
-                    color: kWhite.withOpacity(0.4),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
+              AddTitle(title: title),
               addVerticalSizedBox(10),
-              TextField(
-                key: const Key('description'),
-                controller: description,
-                maxLines: null,
-                style: const TextStyle(
-                  color: kWhite,
-                  fontSize: 20,
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'description',
-                  hintStyle: TextStyle(
-                    color: kWhite.withOpacity(0.4),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
+              AddDescription(description: description),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class AddDescription extends StatelessWidget {
+  const AddDescription({
+    Key? key,
+    required this.description,
+  }) : super(key: key);
+
+  final TextEditingController description;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      key: const Key('description'),
+      controller: description,
+      maxLines: null,
+      style: const TextStyle(
+        color: kWhite,
+        fontSize: 20,
+      ),
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: 'description',
+        hintStyle: TextStyle(
+          color: kWhite.withOpacity(0.4),
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+}
+
+class AddTitle extends StatelessWidget {
+  const AddTitle({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+
+  final TextEditingController title;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      key: const Key('title'),
+      controller: title,
+      maxLines: 1,
+      maxLength: 35,
+      style: const TextStyle(
+        color: kWhite,
+        fontWeight: FontWeight.bold,
+        fontSize: 24,
+      ),
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: 'Title',
+        hintStyle: TextStyle(
+          color: kWhite.withOpacity(0.4),
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+        counterStyle: TextStyle(
+          color: kWhite.withOpacity(0.4),
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
         ),
       ),
     );

@@ -4,7 +4,7 @@ import '../functions/functions.dart';
 
 import '../models/note.dart';
 
-final fireCrudProvider = Provider<FirebaseCrud>((ref) => FirebaseCrud());
+final fireCrudProvider = Provider<FirebaseCRUD>((ref) => FirebaseCRUD());
 final noteProvider =
     StateNotifierProvider.autoDispose<NoteNotifier, List<NoteModel>>(
         (ref) => NoteNotifier());

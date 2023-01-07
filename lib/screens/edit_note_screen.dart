@@ -53,54 +53,82 @@ class EditNoteScreen extends ConsumerWidget {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                key: const Key('title'),
-                initialValue: noteInfo['title'],
-                onSaved: (value) => noteInfo['title'] = value,
-                maxLines: 1,
-                maxLength: 35,
-                style: const TextStyle(
-                  color: kWhite,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Title',
-                  hintStyle: TextStyle(
-                    color: kWhite.withOpacity(0.4),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                  counterStyle: TextStyle(
-                    color: kWhite.withOpacity(0.4),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
+              EditTitle(noteInfo: noteInfo),
               addVerticalSizedBox(10),
-              TextFormField(
-                key: const Key('description'),
-                initialValue: noteInfo['description'],
-                onSaved: (value) => noteInfo['description'] = value,
-                maxLines: null,
-                style: const TextStyle(
-                  color: kWhite,
-                  fontSize: 20,
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'description',
-                  hintStyle: TextStyle(
-                    color: kWhite.withOpacity(0.4),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
+              EditDescription(noteInfo: noteInfo),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class EditDescription extends StatelessWidget {
+  const EditDescription({
+    Key? key,
+    required this.noteInfo,
+  }) : super(key: key);
+
+  final noteInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      key: const Key('description'),
+      initialValue: noteInfo['description'],
+      onSaved: (value) => noteInfo['description'] = value,
+      maxLines: null,
+      style: const TextStyle(
+        color: kWhite,
+        fontSize: 20,
+      ),
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: 'description',
+        hintStyle: TextStyle(
+          color: kWhite.withOpacity(0.4),
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+}
+
+class EditTitle extends StatelessWidget {
+  const EditTitle({
+    Key? key,
+    required this.noteInfo,
+  }) : super(key: key);
+
+  final noteInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      key: const Key('title'),
+      initialValue: noteInfo['title'],
+      onSaved: (value) => noteInfo['title'] = value,
+      maxLines: 1,
+      maxLength: 35,
+      style: const TextStyle(
+        color: kWhite,
+        fontWeight: FontWeight.bold,
+        fontSize: 24,
+      ),
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: 'Title',
+        hintStyle: TextStyle(
+          color: kWhite.withOpacity(0.4),
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+        counterStyle: TextStyle(
+          color: kWhite.withOpacity(0.4),
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
         ),
       ),
     );

@@ -37,89 +37,127 @@ class NoteCard extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 1,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black.withAlpha(120)),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(40),
-                          bottomRight: Radius.circular(40),
-                        ),
-                        color: color.withAlpha(180),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              ColoredLine(color: color),
               addVerticalSizedBox(10),
-              Expanded(
-                flex: 12,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${note?.title}',
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: const TextStyle(
-                          color: kWhite,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      addVerticalSizedBox(10),
-                      Expanded(
-                        child: Text(
-                          '${note?.description}',
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 9,
-                          style: const TextStyle(
-                            color: kWhite,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const Expanded(flex: 2, child: SizedBox()),
+              NoteInfo(note: note),
+              DateAndTime(note: note)
             ],
           ),
-          Positioned(
-            bottom: 10,
-            right: 7,
-            child: Text(
-              '${note?.date}',
-              style: const TextStyle(
-                color: kWhite,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 10,
-            left: 7,
-            child: Text(
-              '${note?.time}',
-              style: const TextStyle(
-                color: kWhite,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
         ],
+      ),
+    );
+  }
+}
+
+class DateAndTime extends StatelessWidget {
+  const DateAndTime({
+    Key? key,
+    required this.note,
+  }) : super(key: key);
+
+  final NoteModel? note;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text(
+          '${note?.date}',
+          style: const TextStyle(
+            color: kWhite,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          '${note?.time}',
+          style: const TextStyle(
+            color: kWhite,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class NoteInfo extends StatelessWidget {
+  const NoteInfo({
+    Key? key,
+    required this.note,
+  }) : super(key: key);
+
+  final NoteModel? note;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 12,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${note?.title}',
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: const TextStyle(
+                color: kWhite,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            addVerticalSizedBox(10),
+            Expanded(
+              child: Text(
+                '${note?.description}',
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 5,
+                style: const TextStyle(
+                  color: kWhite,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ColoredLine extends StatelessWidget {
+  const ColoredLine({
+    Key? key,
+    required this.color,
+  }) : super(key: key);
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black.withAlpha(120)),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(40),
+                bottomRight: Radius.circular(40),
+              ),
+              color: color.withAlpha(180),
+            ),
+          ),
+        ),
       ),
     );
   }

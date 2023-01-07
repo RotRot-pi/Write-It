@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,11 +15,9 @@ class ViewNoteScreen extends ConsumerWidget {
   final noteInfo;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    log('viewscreen');
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.bottom]);
 
-    log('id v :${noteInfo['noteId']}');
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(actions: [
@@ -32,7 +28,7 @@ class ViewNoteScreen extends ConsumerWidget {
                   'title': noteInfo['title'] ?? '',
                   'description': noteInfo['description'] ?? '',
                 };
-                context.push(Routes.editNotePath, extra: note);
+                context.goNamed(Routes.editNoteName, extra: note);
               },
               icon: const Icon(Icons.edit))
         ]),
@@ -40,55 +36,97 @@ class ViewNoteScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(25),
           child: ListView(
             children: [
-              Text(
-                noteInfo['title'] ?? '',
-                softWrap: true,
-                overflow: TextOverflow.clip,
-                style: const TextStyle(
-                  color: kWhite,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ),
+              ViewTitle(noteInfo: noteInfo),
               const Divider(
                 color: kLightWhite,
                 thickness: 1,
               ),
               addVerticalSizedBox(10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    noteInfo['time'],
-                    style: const TextStyle(
-                      color: kWhite,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    noteInfo['date'],
-                    style: const TextStyle(
-                      color: kWhite,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
+              ViewDateAndTime(noteInfo: noteInfo),
               const Divider(
                 color: kLightWhite,
                 thickness: 1,
               ),
               addVerticalSizedBox(25),
-              Text(
-                noteInfo['description'],
-                style: const TextStyle(
-                  color: kWhite,
-                  fontSize: 20,
-                ),
-              ),
+              ViewDescription(noteInfo: noteInfo),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ViewDescription extends StatelessWidget {
+  const ViewDescription({
+    Key? key,
+    required this.noteInfo,
+  }) : super(key: key);
+
+  final noteInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      noteInfo['description'],
+      style: const TextStyle(
+        color: kWhite,
+        fontSize: 20,
+      ),
+    );
+  }
+}
+
+class ViewDateAndTime extends StatelessWidget {
+  const ViewDateAndTime({
+    Key? key,
+    required this.noteInfo,
+  }) : super(key: key);
+
+  final noteInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          noteInfo['time'],
+          style: const TextStyle(
+            color: kWhite,
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          noteInfo['date'],
+          style: const TextStyle(
+            color: kWhite,
+            fontSize: 16,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ViewTitle extends StatelessWidget {
+  const ViewTitle({
+    Key? key,
+    required this.noteInfo,
+  }) : super(key: key);
+
+  final noteInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      noteInfo['title'] ?? '',
+      softWrap: true,
+      overflow: TextOverflow.clip,
+      style: const TextStyle(
+        color: kWhite,
+        fontWeight: FontWeight.bold,
+        fontSize: 24,
       ),
     );
   }
