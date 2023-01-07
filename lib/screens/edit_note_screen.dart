@@ -23,40 +23,42 @@ class EditNoteScreen extends ConsumerWidget {
     log('id e:${noteInfo['noteId']}');
     FormState formData;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add note'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              if (noteInfo['title'] != null ||
-                  noteInfo['description'] != null) {
-                formData = _formKey.currentState!;
-                formData.save();
-                ref.read(fireCrudProvider).updateNote(
-                      noteInfo['noteId'],
-                      context,
-                      title: noteInfo['title'],
-                      description: noteInfo['description'],
-                      time: timeFormatter.format(DateTime.now()),
-                      date: dateFormatter.format(DateTime.now()),
-                    );
-              }
-            },
-            icon: const Icon(Icons.save),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              EditTitle(noteInfo: noteInfo),
-              addVerticalSizedBox(10),
-              EditDescription(noteInfo: noteInfo),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Add note'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                if (noteInfo['title'] != null ||
+                    noteInfo['description'] != null) {
+                  formData = _formKey.currentState!;
+                  formData.save();
+                  ref.read(fireCrudProvider).updateNote(
+                        noteInfo['noteId'],
+                        context,
+                        title: noteInfo['title'],
+                        description: noteInfo['description'],
+                        time: timeFormatter.format(DateTime.now()),
+                        date: dateFormatter.format(DateTime.now()),
+                      );
+                }
+              },
+              icon: const Icon(Icons.save),
+            )
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                EditTitle(noteInfo: noteInfo),
+                addVerticalSizedBox(10),
+                EditDescription(noteInfo: noteInfo),
+              ],
+            ),
           ),
         ),
       ),

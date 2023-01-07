@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,27 +32,67 @@ class GoRoutes {
             path: Routes.homePath,
             name: Routes.homeName,
             builder: (context, state) => const HomeScreen(),
-            routes: [
-              GoRoute(
-                path: Routes.addNotePath,
-                name: Routes.addNoteName,
-                builder: (context, state) => AddNoteScreen(),
+          ),
+          GoRoute(
+            path: Routes.addNotePath,
+            name: Routes.addNoteName,
+            pageBuilder: (context, state) => CustomTransitionPage(
+              transitionDuration: const Duration(milliseconds: 350),
+              child: AddNoteScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) =>
+                      SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: AddNoteScreen(),
               ),
-              GoRoute(
-                path: Routes.viewNotePath,
-                name: Routes.viewNoteName,
-                builder: (context, state) => ViewNoteScreen(
+            ),
+          ),
+          GoRoute(
+            path: Routes.viewNotePath,
+            name: Routes.viewNoteName,
+            pageBuilder: (context, state) => CustomTransitionPage(
+                transitionDuration: const Duration(milliseconds: 350),
+                child: ViewNoteScreen(
+                  noteInfo: state.extra as Map,
+                ),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(
+                          opacity: CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.fastOutSlowIn,
+                          ),
+                          child: ViewNoteScreen(
+                            noteInfo: state.extra as Map,
+                          ),
+                        )),
+            // builder: (context, state) => ViewNoteScreen(
+            //   noteInfo: state.extra as Map,
+            // ),
+          ),
+          GoRoute(
+            path: Routes.editNotePath,
+            name: Routes.editNoteName,
+            pageBuilder: (context, state) => CustomTransitionPage(
+              transitionDuration: const Duration(milliseconds: 250),
+              child: EditNoteScreen(
+                noteInfo: state.extra as Map,
+              ),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) =>
+                      SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: EditNoteScreen(
                   noteInfo: state.extra as Map,
                 ),
               ),
-              GoRoute(
-                path: Routes.editNotePath,
-                name: Routes.editNoteName,
-                builder: (context, state) => EditNoteScreen(
-                  noteInfo: state.extra as Map,
-                ),
-              ),
-            ],
+            ),
           ),
         ],
         redirect: ((context, state) {
@@ -70,5 +111,47 @@ class GoRoutes {
           return isAuth == true ? null : Routes.splashPath;
         }));
     return router;
+  }
+}
+
+class ScaleTrasitionWidget extends StatefulWidget {
+  ScaleTrasitionWidget({
+    Key? key,
+    required this.animation,
+  }) : super(key: key);
+  Animation<double> animation;
+
+  @override
+  State<ScaleTrasitionWidget> createState() => _ScaleTrasitionWidgetState();
+}
+
+class _ScaleTrasitionWidgetState extends State<ScaleTrasitionWidget> {
+  final Tween<double> _tween = Tween<double>(
+    begin: 0.0,
+    end: 1.0,
+  );
+
+  //  AnimatedWidget(
+  //   tween: _tween,
+  //   child: Container(),
+  //   duration: Duration(milliseconds: 500),
+  // );
+
+  @override
+  Widget build(BuildContext context) {
+    final AnimatedWidget animatedWidget = ScaleTransition(
+        scale: CurvedAnimation(
+          parent: widget.animation,
+          curve: Curves.fastOutSlowIn,
+        ),
+        child: Container());
+    return animatedWidget;
+
+    // return ScaleTransition(
+    //   scale: CurvedAnimation(
+    //     parent: widget.animation,
+    //     curve: Curves.fastOutSlowIn,
+    //   ),
+    // );
   }
 }

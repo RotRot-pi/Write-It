@@ -4,9 +4,9 @@ class Routes {
   static const splashPath = '/splash';
   static const loginPath = '/login';
   static const signupPath = '/signup';
-  static const addNotePath = 'addnote';
-  static const editNotePath = 'editNote';
-  static const viewNotePath = 'viewNote';
+  static const addNotePath = '/addnote';
+  static const editNotePath = '/editNote';
+  static const viewNotePath = '/viewNote';
   static const authenticationPath = '/authentication';
 
   //route name

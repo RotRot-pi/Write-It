@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import '../services/services.dart';
 import '../widgets/widgets.dart';
 
-//TODO: optimize the build() in the app ,by making the widgets in sepret classes
 //TODO: add Trasitions to the navigation system
 //TODO: use the StaggredGridView  intead of the GridView
 //TODO: Commit the changes
@@ -22,14 +21,16 @@ class HomeScreen extends ConsumerWidget {
     final auth = ref.watch(firebaseAuthProvider);
     final notesDocuments = ref.watch(notesProvider);
     List<NoteModel> notes = [];
-    return Scaffold(
-      appBar: AppBar(title: const Text('Write It'), actions: [
-        SignOutButton(auth: auth),
-      ]),
-      body: HomeScreenView(
-        notesDocuments: notesDocuments,
-        notes: notes,
-        ref: ref,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Write It'), actions: [
+          SignOutButton(auth: auth),
+        ]),
+        body: HomeScreenView(
+          notesDocuments: notesDocuments,
+          notes: notes,
+          ref: ref,
+        ),
       ),
     );
   }
@@ -175,7 +176,7 @@ class NotesGridView extends StatelessWidget {
                   'time': notes[index].time,
                 };
 
-                context.goNamed(Routes.viewNoteName, extra: noteInfo);
+                context.pushNamed(Routes.viewNoteName, extra: noteInfo);
               },
               onLongPress: () {
                 showDialog(

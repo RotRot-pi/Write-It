@@ -15,9 +15,6 @@ class ViewNoteScreen extends ConsumerWidget {
   final noteInfo;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(actions: [
@@ -28,7 +25,7 @@ class ViewNoteScreen extends ConsumerWidget {
                   'title': noteInfo['title'] ?? '',
                   'description': noteInfo['description'] ?? '',
                 };
-                context.goNamed(Routes.editNoteName, extra: note);
+                context.pushNamed(Routes.editNoteName, extra: note);
               },
               icon: const Icon(Icons.edit))
         ]),
