@@ -15,14 +15,9 @@ class GoRoutes {
     final GoRouter router = GoRouter(
         errorBuilder: (context, state) => ErrorScreen(error: state.error),
         navigatorKey: navigatorKey,
-        initialLocation: Routes.splashPath,
+        initialLocation: Routes.authenticationPath,
         debugLogDiagnostics: true,
         routes: [
-          GoRoute(
-            path: Routes.splashPath,
-            name: Routes.splashName,
-            builder: (context, state) => const SplashScreen(),
-          ),
           GoRoute(
             path: Routes.authenticationPath,
             name: Routes.authenticationName,
@@ -37,7 +32,7 @@ class GoRoutes {
             path: Routes.addNotePath,
             name: Routes.addNoteName,
             pageBuilder: (context, state) => CustomTransitionPage(
-              transitionDuration: const Duration(milliseconds: 350),
+              transitionDuration: const Duration(milliseconds: 250),
               child: AddNoteScreen(),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) =>
@@ -69,9 +64,6 @@ class GoRoutes {
                             noteInfo: state.extra as Map,
                           ),
                         )),
-            // builder: (context, state) => ViewNoteScreen(
-            //   noteInfo: state.extra as Map,
-            // ),
           ),
           GoRoute(
             path: Routes.editNotePath,
@@ -98,60 +90,14 @@ class GoRoutes {
         redirect: ((context, state) {
           if (authState.isLoading || authState.hasError) return null;
           final isAuth = authState.valueOrNull != null;
-          final isSplash = state.location == Routes.splashPath;
           final isLogin = state.location == Routes.authenticationPath;
 
-          if (isSplash == true) {
-            return isAuth == true ? Routes.homePath : Routes.authenticationPath;
-          }
-          if (isLogin == true) {
-            return isAuth == true ? Routes.homePath : null;
+          if (isLogin) {
+            return isAuth ? Routes.homePath : null;
           }
 
-          return isAuth == true ? null : Routes.splashPath;
+          return null;
         }));
     return router;
-  }
-}
-
-class ScaleTrasitionWidget extends StatefulWidget {
-  ScaleTrasitionWidget({
-    Key? key,
-    required this.animation,
-  }) : super(key: key);
-  Animation<double> animation;
-
-  @override
-  State<ScaleTrasitionWidget> createState() => _ScaleTrasitionWidgetState();
-}
-
-class _ScaleTrasitionWidgetState extends State<ScaleTrasitionWidget> {
-  final Tween<double> _tween = Tween<double>(
-    begin: 0.0,
-    end: 1.0,
-  );
-
-  //  AnimatedWidget(
-  //   tween: _tween,
-  //   child: Container(),
-  //   duration: Duration(milliseconds: 500),
-  // );
-
-  @override
-  Widget build(BuildContext context) {
-    final AnimatedWidget animatedWidget = ScaleTransition(
-        scale: CurvedAnimation(
-          parent: widget.animation,
-          curve: Curves.fastOutSlowIn,
-        ),
-        child: Container());
-    return animatedWidget;
-
-    // return ScaleTransition(
-    //   scale: CurvedAnimation(
-    //     parent: widget.animation,
-    //     curve: Curves.fastOutSlowIn,
-    //   ),
-    // );
   }
 }

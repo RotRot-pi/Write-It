@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:write_it/utils/colors.dart';
@@ -12,7 +12,7 @@ class ViewNoteScreen extends ConsumerWidget {
     required this.noteInfo,
     super.key,
   });
-  final noteInfo;
+  final Map noteInfo;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
@@ -60,7 +60,7 @@ class ViewDescription extends StatelessWidget {
     required this.noteInfo,
   }) : super(key: key);
 
-  final noteInfo;
+  final Map noteInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class ViewDateAndTime extends StatelessWidget {
     required this.noteInfo,
   }) : super(key: key);
 
-  final noteInfo;
+  final Map noteInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,7 @@ class ViewTitle extends StatelessWidget {
     required this.noteInfo,
   }) : super(key: key);
 
-  final noteInfo;
+  final Map noteInfo;
 
   @override
   Widget build(BuildContext context) {

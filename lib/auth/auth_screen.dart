@@ -33,16 +33,6 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
   }
 
   @override
-  void didUpdateWidget(covariant AuthenticationScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     usernameController.dispose();
     emailController.dispose();
@@ -57,14 +47,12 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
     final isLogin = ref.watch(isLoginState);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: kBlack,
       body: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               AppIcon(
                 image: appIconImage,
@@ -287,7 +275,6 @@ class UserNameFormField extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: (value) => usernameController.text = value.trim(),
       validator: (value) {
-        debugPrint("value:$value");
         if (value!.isEmpty && value.length < 6) {
           return 'the username must contain at least 4 character';
         }

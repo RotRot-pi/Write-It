@@ -21,6 +21,7 @@ class Authentication {
 
     if (formData.validate()) {
       formData.save();
+
       try {
         UserCredential userCredential =
             await _auth.createUserWithEmailAndPassword(
@@ -28,6 +29,7 @@ class Authentication {
           password: password,
         );
 
+        log('connection State ');
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
@@ -40,11 +42,11 @@ class Authentication {
         return userCredential;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-          errorDialog(context, e.message);
+          await errorDialog(context, e.message);
 
           log('The password provided is too weak.');
         } else if (e.code == 'email-already-in-use') {
-          errorDialog(context, e.message);
+          await errorDialog(context, e.message);
           log('The account already exists for that email.');
         }
         log(e.code);
@@ -67,8 +69,10 @@ class Authentication {
     var password,
   ) async {
     var formData = formState.currentState;
+
     if (formData!.validate()) {
       formData.save();
+
       try {
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email,
@@ -77,10 +81,10 @@ class Authentication {
         return userCredential;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
-          errorDialog(context, e.message);
+          await errorDialog(context, e.message);
           log('No user found for that email.');
         } else if (e.code == 'wrong-password') {
-          errorDialog(context, e.message);
+          await errorDialog(context, e.message);
           log('Wrong password provided for that user.');
         } else if (e.code == 'unknown') {
           log('error message:${e.message}');
@@ -92,7 +96,7 @@ class Authentication {
         log('error in log in :$e');
       }
     } else if (!formData.validate()) {
-      return await invalidDialog(context, 'Fill the field correcly please');
+      await invalidDialog(context, 'Fill the field correcly please');
     }
   }
 

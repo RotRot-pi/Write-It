@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-var clipBoardImage = Image.asset(
-  'assets/images/note.png',
+var appBackGroundImage = Image.asset(
+  'assets/images/write_it_image.png',
   fit: BoxFit.cover,
 );
 var appIconImage = Image.asset(

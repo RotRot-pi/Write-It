@@ -13,7 +13,7 @@ class EditNoteScreen extends ConsumerWidget {
     required this.noteInfo,
     super.key,
   });
-  final noteInfo;
+  final Map noteInfo;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -72,7 +72,7 @@ class EditDescription extends StatelessWidget {
     required this.noteInfo,
   }) : super(key: key);
 
-  final noteInfo;
+  final Map noteInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class EditTitle extends StatelessWidget {
     required this.noteInfo,
   }) : super(key: key);
 
-  final noteInfo;
+  final Map noteInfo;
 
   @override
   Widget build(BuildContext context) {

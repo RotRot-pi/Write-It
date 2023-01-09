@@ -32,11 +32,13 @@ dependencies:
   animated_splash_screen: ^1.3.0
   awesome_dialog: ^3.0.2
   cloud_firestore: ^4.2.0
+  connectivity_plus: ^3.0.2
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.2.1
   firebase_core: ^2.4.0
   flutter:
     sdk: flutter
+  flutter_native_splash: ^2.2.16
   flutter_riverpod: ^2.1.3
   go_router: ^6.0.1
   google_fonts: ^3.0.1
@@ -48,7 +50,9 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-
+flutter_native_splash:
+  background_image: assets/images/write_it_image.png
+  android_gravity: fill
 flutter_icons:
   android: true
   image_path: "assets/images/write_it.png"

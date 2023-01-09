@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,16 +10,32 @@ import 'package:go_router/go_router.dart';
 import '../services/services.dart';
 import '../widgets/widgets.dart';
 
-//TODO: add Trasitions to the navigation system
+//TODO:addbutton is transparent ,use a better design
+
 //TODO: use the StaggredGridView  intead of the GridView
-//TODO: Commit the changes
+
 //TODO: make a better designed UI for the app
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => HomeScreenState();
+}
+
+class HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void dispose() {
+    ref.invalidate(noteProvider);
+    ref.invalidate(authStateProvider);
+    ref.invalidate(userState);
+
+    log('HomeScreen Disposed');
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final auth = ref.watch(firebaseAuthProvider);
     final notesDocuments = ref.watch(notesProvider);
     List<NoteModel> notes = [];
@@ -82,12 +100,18 @@ class HomeScreenView extends StatelessWidget {
                   time: doc.data()['time']);
 
               notes.add(note);
-              debugPrint('notes :$notes');
             }
-            return NotesGridView(
-              notes: notes,
-              ref: ref,
-            );
+            return notes.isEmpty
+                ? const Center(
+                    child: Text(
+                      'You have no notes yet',
+                      style: TextStyle(color: kWhite, fontSize: 17),
+                    ),
+                  )
+                : NotesGridView(
+                    notes: notes,
+                    ref: ref,
+                  );
           },
           error: ((error, stackTrace) => Center(child: Text('error:$error'))),
           loading: () => const Center(
@@ -159,55 +183,55 @@ class NotesGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
           crossAxisCount: 2,
         ),
         itemCount: notes.length,
         itemBuilder: ((context, index) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-            child: GestureDetector(
-              onTap: () {
-                var noteInfo = {
-                  'noteId': notes[index].id,
-                  'title': notes[index].title ?? '',
-                  'description': notes[index].description ?? '',
-                  'date': notes[index].date,
-                  'time': notes[index].time,
-                };
+          return GestureDetector(
+            onTap: () {
+              var noteInfo = {
+                'noteId': notes[index].id,
+                'title': notes[index].title ?? '',
+                'description': notes[index].description ?? '',
+                'date': notes[index].date,
+                'time': notes[index].time,
+              };
 
-                context.pushNamed(Routes.viewNoteName, extra: noteInfo);
-              },
-              onLongPress: () {
-                showDialog(
-                  barrierColor: Colors.transparent,
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Delete'),
-                      content: const Text('Do you want to delete this note'),
-                      actions: [
-                        IconButton(
-                            onPressed: () => context.pop(),
-                            icon: const Icon(Icons.clear)),
-                        IconButton(
-                            onPressed: (() {
-                              ref
-                                  .read(fireCrudProvider)
-                                  .deleteNote(notes[index].id!, context)
-                                  .then((value) => context.pop());
+              context.pushNamed(Routes.viewNoteName, extra: noteInfo);
+            },
+            onLongPress: () {
+              showDialog(
+                barrierColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Delete'),
+                    content: const Text('Do you want to delete this note'),
+                    actions: [
+                      IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(Icons.clear)),
+                      IconButton(
+                          onPressed: (() {
+                            ref
+                                .read(fireCrudProvider)
+                                .deleteNote(notes[index].id!, context)
+                                .then((value) => context.pop());
 
-                              notes.remove(notes[index]);
-                            }),
-                            icon: const Icon(Icons.delete))
-                      ],
-                    );
-                  },
-                );
-              },
-              child: NoteCard(
-                note: notes[index],
-              ),
+                            notes.remove(notes[index]);
+                          }),
+                          icon: const Icon(Icons.delete))
+                    ],
+                  );
+                },
+              );
+            },
+            child: NoteCard(
+              note: notes[index],
             ),
           );
         }));
