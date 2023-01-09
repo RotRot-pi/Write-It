@@ -29,7 +29,6 @@ class Authentication {
           password: password,
         );
 
-        log('connection State ');
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
